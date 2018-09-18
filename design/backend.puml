@@ -35,8 +35,13 @@ class Wall {
     + move(color: String, col: Number)
 }
 
+class PatternLines {
+    +floorLine: Number = 0
+}
+
 Game o-- Bag
 Game o-- Table
 Game o-- Player
 Player o-- Wall
+Player o-- PatternLines
 @enduml

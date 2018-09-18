@@ -1,0 +1,55 @@
+@startuml
+
+boundary Frontend as fe order 10
+control Backend as be order 20
+control Lambda as l order 30
+
+group Start of the game
+    alt creating game
+        fe -> be: new game
+        be -> be: creates lobby
+    else connecting to the existed game
+        fe -> be: connect to the game
+        be -> be: updates lobby
+    end
+    be --> fe:  show lobby
+
+    fe -> be: start game
+
+    be -> l: create lambda
+    l -> l: create game
+    l -> l: register socket
+    l --> be: game info
+    be --> fe:  game info
+    fe -> fe:  register socket
+
+
+    fe -> l: emit start:game
+    l --> fe:  game:status (initial arrangement)
+end
+
+loop
+    group Move Preparation
+        group Bag can be shuffled more than once
+            fe -> l: bag:shuffle
+        end
+        fe -> l: factory:displays:get:tiles
+        l --> fe:  game:status (place tiles on factory displays)
+    end
+
+    group Move
+        fe -> l: move
+        l --> fe:  game:status (move)
+    end
+
+    group Move End
+        l --> fe:  game:status (counting points)
+    end
+end
+
+group End of the Game
+    l --> fe:  game:status (bonus points)
+    fe -> be: game:results
+end
+
+@enduml

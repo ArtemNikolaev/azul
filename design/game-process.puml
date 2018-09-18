@@ -49,7 +49,9 @@ end
 
 group End of the Game
     l --> fe:  game:status (bonus points)
-    fe -> be: game:results
+    group if you are host
+        fe -> be: game:results
+    end
 end
 
 @enduml

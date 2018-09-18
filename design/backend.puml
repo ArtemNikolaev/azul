@@ -1,0 +1,42 @@
+@startuml
+
+class Game {
+    -bag: Bag
+    -table: Table
+    -players: []<Player>
+}
+
+class Bag {
+    -bag: []<String>
+    -box: []<String>
+    +void shuffle()
+    +array getTiles()
+}
+
+class Table {
+    -displays: []<[]<String>>
+    -table: []<String>
+    -scoringMarker: Boolean
+
+    +void setDisplay(display: Number, colors: []<String>)
+    +void move(color: String, display: Number || Undefined)
+}
+
+class Player {
+    -score: Number = 0
+    -scoringMarker: Boolean
+
+}
+
+class Wall {
+    -level: Number
+    -wall: []<[]<{color: String, col: Number}>>
+
+    + move(color: String, col: Number)
+}
+
+Game o-- Bag
+Game o-- Table
+Game o-- Player
+Player o-- Wall
+@enduml

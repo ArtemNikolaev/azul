@@ -1,0 +1,31 @@
+@startuml
+participant "Client Socket" as cs
+participant "Backend Socket" as bs
+
+group Start of the game
+    cs -> bs: new:game
+    bs --> cs: game:status (initial arrangement)
+end
+
+group Move Preparation
+    group Bag can be shuffled more than once
+        cs -> bs: bag:shuffle
+    end
+    cs -> bs: factory:displays:get:tiles
+    bs --> cs: game:status (place tiles on factory displays)
+end
+
+group Move
+    cs -> bs: move
+    bs --> cs: game:status (move)
+end
+
+group Move End
+    bs --> cs: game:status (counting points)
+end
+
+group End of the Game
+    bs --> cs: game:status (bonus points)
+end
+
+@enduml

@@ -24,31 +24,39 @@ group Start of the game
     fe -> fe:  register socket
 
 
-    fe -> l: emit start:game
-    l --> fe:  game:status (initial arrangement)
+    fe -> l: start:game
+    l --> fe:  game:status
 end
 
 loop
     group Move Preparation
         group Bag can be shuffled more than once
-            fe -> l: bag:shuffle
+            fe -> l: emit bag:shuffle
         end
-        fe -> l: factory:displays:get:tiles
-        l --> fe:  game:status (place tiles on factory displays)
+        fe -> l: emit select:first:display
+
+        loop for each display
+            l --> fe : emit move:from:bag:to:display
+        end
     end
 
     group Move
-        fe -> l: move
-        l --> fe:  game:status (move)
+        fe -> l: move:from:display:to:pattern:line
+        l --> fe:  game:status
     end
 
     group Move End
-        l --> fe:  game:status (counting points)
+        loop
+            l --> fe:  move:from:pattern:line:to:wall
+        end
     end
 end
 
 group End of the Game
-    l --> fe:  game:status (bonus points)
+    l --> fe: add:horizontal:line:bonus
+    l --> fe: add:vertical:line:bonus
+    l --> fe: add:color:bonus
+    l --> fe: game:over
     group if you are host
         fe -> be: game:results
     end

@@ -1,0 +1,17 @@
+@startuml
+
+class Wall {
+    -level: number
+    -rules: {}<[]<[]>>
+    -wall: {}<[]<[]>>
+
+    +constructor(level: Enum(0,1))
+
+    +void canBePlaced(color: number, row: number, col: number|null)
+    +[]<{}> place(color: number, row: number, col: number|null)
+    +bool gameOver()
+    +[]<{}> getBonuses()
+
+}
+
+@enduml

@@ -1,0 +1,23 @@
+{
+  "name": "azul",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArtemNikolaev/azul.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArtemNikolaev/azul/issues"
+  },
+  "homepage": "https://github.com/ArtemNikolaev/azul#readme",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}

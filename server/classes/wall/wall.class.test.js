@@ -1,11 +1,4 @@
 /*
-  constructor
-* класс должен создаваться
-* пустой конструктор создаёт легкий уровень сложный
-* правильное создание лёгкий уровень сложности
-* правильное создание сложный уровень сложности
-* неправильный уровень сложности генерирует ошибку
-*
 * canBePlaced
 * всегда должен быть цвет
 * всегда должна быть строка
@@ -35,38 +28,43 @@
 * неуказанная колонка генерирует исключение
 *
 * */
-import Wall from './wall.class';
+const Wall = require('./wall.class');
+const levels = require('../../dictionaries/levels');
 
 describe('server/classes/wall/wall.class.js', () => {
   describe('constructor', () => {
-    describe('should create easy level wall if there is no args', () => {
+    const wall = [
+      new Array(5),
+      new Array(5),
+      new Array(5),
+      new Array(5),
+      new Array(5)
+    ];
+
+    it(`should create EASY level Wall for undefined value`, () => {
       const wallObj = new Wall();
 
-      const rules = [
-        [
-          0,1,2,3,4 // value as column
-        ], //row as index
-        [
-          1,2,3,4,0 // value as column
-        ], //row as index
-        [
-          2,3,4,0,1 // value as column
-        ], //row as index
-        [
-          3,4,0,1,2 // value as column
-        ], //row as index
-        [
-          4,0,1,2,3 // value as column
-        ], //row as index
-        [
-          0,1,2,3,4 // value as column
-        ], //row as index
-      ]; // color  as index
-      const wall = [new Array(5),new Array(5),new Array(5),new Array(5)];
-
-      expect(wallObj).toEqual(wall);
-      expect(rules).toEqual(rules);
-
+      expect(wallObj._level).toBe(levels.EASY);
+      expect(wallObj._wall).toEqual(wall);
     });
+
+    it(`should create EASY level Wall for STRING value`, () => {
+      const wallObj = new Wall('BLA');
+
+      expect(wallObj._level).toBe(levels.EASY);
+      expect(wallObj._wall).toEqual(wall);
+    });
+
+    for (let i = 0; i <= Object.keys(levels).length + 5; i++) {
+      const level = (levels.HARD === i) ? 'HARD' : 'EASY';
+
+      it(`should create ${level} level Wall for ${i} value`, () => {
+        const wallObj = new Wall(i);
+
+        expect(wallObj._level).toBe(levels[level]);
+        expect(wallObj._wall).toEqual(wall);
+      });
+    }
+
   });
 });

@@ -1,6 +1,9 @@
-import level from '../../dictionaries/levels';
+const levels = require('../../dictionaries/levels');
+const levelsInt = Object.values(levels);
 
-export default class Wall {
+const colors = require('../../dictionaries/colors');
+
+class Wall {
 
   /**
    * Represents a wall from game
@@ -9,8 +12,16 @@ export default class Wall {
    * @constructor
    * @param {number} level - level of the game
    */
-  constructor(level = level.EASY) {
-
+  constructor(level) {
+    if (!level || levelsInt.indexOf(level) === -1) level = levels.EASY;
+    this._level = level;
+    this._wall = [
+      new Array(5),
+      new Array(5),
+      new Array(5),
+      new Array(5),
+      new Array(5)
+    ];
   }
 
   /**
@@ -41,3 +52,5 @@ export default class Wall {
 
   }
 }
+
+module.exports = Wall;

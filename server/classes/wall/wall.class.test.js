@@ -30,12 +30,13 @@
 * */
 const Wall = require('./wall.class');
 const levels = require('../../dictionaries/levels');
+const colors = require('../../dictionaries/colors');
 
 const utils = require('./wall.utils');
 jest.mock('./wall.utils');
 
 describe('server/classes/wall/wall.class.js', () => {
-  describe('constructor', () => {
+  describe('constructor()', () => {
     const rules = undefined;
 
     const wall = [
@@ -75,4 +76,82 @@ describe('server/classes/wall/wall.class.js', () => {
       });
     }
   });
+
+  describe('canBePlaced()', () => {
+    let wall, rulesMock;
+    const color = 0;
+    const row = 0;
+    const column = 0;
+
+    describe('on EASY level', () => {
+      rulesMock = [
+        [0, 1, 2, 3, 4],
+        [1, 2, 3, 4, 0],
+        [2, 3, 4, 0, 1],
+        [3, 4, 0, 1, 2],
+        [4, 0, 1, 2, 3],
+      ];
+
+      utils.createRules.mockImplementation(rulesMock);
+
+      beforeEach(() => {
+        wall = new Wall(levels.EASY);
+      });
+
+      it('should return true if color can be placed in a row', () => {
+        expect(wall.canBePlaced(color, row)).toBe(true);
+      });
+      it('should return false if color can\'t be placed in a row', () => {
+        wall._wall[row][column] = colors[color];
+
+        expect(wall.canBePlaced(color, row)).toBe(false);
+      });
+      it('should return true if color can be placed in a row[col]', () => {
+        expect(wall.canBePlaced(color, row, col)).toBe(true);
+      });
+      it('should return false if color can\t be placed in a row[col]', () => {
+        wall._wall[row][column] = colors[color];
+
+        expect(wall.canBePlaced(color, row, col)).toBe(false);
+      });
+    });
+
+    describe('on HARD level', () => {
+      utils.createRules.mockImplementation(rulesMock);
+
+      beforeEach(() => {
+        wall = new Wall(levels.EASY);
+      });
+
+      it('should return true if color can be placed in a row', () => {
+        expect(wall.canBePlaced(color, row)).toBe(true);
+      });
+
+      it('should return false if color can\'t be placed in a row', () => {
+        wall._wall[row][column] = colors[color];
+
+        expect(wall.canBePlaced(color, row)).toBe(false);
+      });
+
+      it('should return false if color can\'t be placed in a row because of no place', () => {
+        wall._wall[0][0] = colors[1];
+        wall._wall[0][1] = colors[2];
+        wall._wall[0][2] = colors[3];
+        wall._wall[1][3] = colors[0];
+        wall._wall[2][4] = colors[0];
+
+        expect(wall.canBePlaced(0, 0)).toBe(false);
+      });
+
+      it('should return true if color can be placed in a row[col]', () => {
+        expect(wall.canBePlaced(color, row, col)).toBe(true);
+      });
+
+      it('should return false if color can\t be placed in a row[col]', () => {
+        wall._wall[row][column] = colors[color];
+
+        expect(wall.canBePlaced(color, row, col)).toBe(false);
+      });
+    })
+  })
 });

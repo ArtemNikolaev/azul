@@ -23,7 +23,7 @@ class Wall {
       new Array(5),
       new Array(5)
     ];
-    
+
     this._rules = utils.createRules(level);
   }
 

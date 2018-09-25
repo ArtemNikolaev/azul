@@ -77,14 +77,9 @@ describe('server/classes/wall/wall.class.js', () => {
     }
   });
 
-  describe('canBePlaced()', () => {
-    let wall, rulesMock;
-    const color = 0;
-    const row = 0;
-    const column = 0;
-
+  describe('canBePlaced() method', () => {
     describe('on EASY level', () => {
-      rulesMock = [
+      const rulesMock = [
         [0, 1, 2, 3, 4],
         [1, 2, 3, 4, 0],
         [2, 3, 4, 0, 1],
@@ -92,66 +87,78 @@ describe('server/classes/wall/wall.class.js', () => {
         [4, 0, 1, 2, 3],
       ];
 
-      utils.createRules.mockImplementation(rulesMock);
-
       beforeEach(() => {
         wall = new Wall(levels.EASY);
+
+        utils.createRules.mockImplementation(rulesMock);
       });
 
-      it('should return true if color can be placed in a row', () => {
-        expect(wall.canBePlaced(color, row)).toBe(true);
-      });
-      it('should return false if color can\'t be placed in a row', () => {
-        wall._wall[row][column] = colors[color];
+      for(let color = 0; color < colors.length; color++) {
+        for(let row = 0; row < 5; row++) {
+          it(`should return 'true' for '${colors[color]}' tile in ${row} row`, () => {
+            expect(wall.canBePlaced(color, row)).toBe(true);
+          });
 
-        expect(wall.canBePlaced(color, row)).toBe(false);
-      });
-      it('should return true if color can be placed in a row[col]', () => {
-        expect(wall.canBePlaced(color, row, col)).toBe(true);
-      });
-      it('should return false if color can\t be placed in a row[col]', () => {
-        wall._wall[row][column] = colors[color];
+          for(let col = 0; col < 5; col++) {
+            const bool = (rulesMock[color][row] === col);
 
-        expect(wall.canBePlaced(color, row, col)).toBe(false);
-      });
+            it(`should return '${bool}' for '${colors[color]}' tile in [${row}][${col}]`,() => {
+              expect(wall.canBePlaced(color, row, col)).toBe(bool);
+            });
+
+            for(let colorI = 0; colorI < colors.length; colorI++) {
+              for(let rowI = 0; rowI < 5; rowI++) {
+                for(let colI = 0; colI < 5; colI++) {
+                  
+                }
+              }
+            }
+          }
+        }
+      }
     });
 
     describe('on HARD level', () => {
-      utils.createRules.mockImplementation(rulesMock);
+      const rulesMock = undefined;
 
       beforeEach(() => {
-        wall = new Wall(levels.EASY);
+        wall = new Wall(levels.HARD);
+
+        utils.createRules.mockImplementation(rulesMock);
       });
 
-      it('should return true if color can be placed in a row', () => {
-        expect(wall.canBePlaced(color, row)).toBe(true);
-      });
+      for(let color = 0; color < colors.length; color++) {
+        for(let row = 0; row < 5; row++) {
+          it(`should return 'true' for '${colors[color]}' tile in ${row} row`, () => {
+            expect(wall.canBePlaced(color, row)).toBe(true);
+          });
 
-      it('should return false if color can\'t be placed in a row', () => {
-        wall._wall[row][column] = colors[color];
+          for(let col = 0; col < 5; col++) {
+            it(`should return 'true' for '${colors[color]}' tile in [${row}][${col}]`, () => {
+              expect(wall.canBePlaced(color, row, col)).toBe(true);
+            });
 
-        expect(wall.canBePlaced(color, row)).toBe(false);
-      });
+            /*for(let colorI = 0; colorI < colors.length; colorI++) {
+              for(let rowI = 0; rowI < 5; rowI++) {
+                for(let colI = 0; colI < 5; colI++) {
+                  const sameColor = (colorI === color);
+                  const sameRow = (rowI === row);
+                  const sameCol = (colI === col);
 
-      it('should return false if color can\'t be placed in a row because of no place', () => {
-        wall._wall[0][0] = colors[1];
-        wall._wall[0][1] = colors[2];
-        wall._wall[0][2] = colors[3];
-        wall._wall[1][3] = colors[0];
-        wall._wall[2][4] = colors[0];
+                  const bool = (sameColor && (sameRow || sameCol));
 
-        expect(wall.canBePlaced(0, 0)).toBe(false);
-      });
+                  it(`should return '${bool}' for '${colors[color]}' tile in [${row}][${col}]`,() => {
+                  wall._wall[row][col] = color;
 
-      it('should return true if color can be placed in a row[col]', () => {
-        expect(wall.canBePlaced(color, row, col)).toBe(true);
-      });
+                    expect(wall.canBePlaced(color, row, col)).toBe(bool);
+                  });
+                }
+              }
+            }*/
+          }
+        }
+      }
+    });
+  });
 
-      it('should return false if color can\t be placed in a row[col]', () => {
-        wall._wall[row][column] = colors[color];
-
-        expect(wall.canBePlaced(color, row, col)).toBe(false);
-      });
-    })
-  })
 });

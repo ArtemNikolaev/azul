@@ -31,8 +31,13 @@
 const Wall = require('./wall.class');
 const levels = require('../../dictionaries/levels');
 
+const utils = require('./wall.utils');
+jest.mock('./wall.utils');
+
 describe('server/classes/wall/wall.class.js', () => {
   describe('constructor', () => {
+    const rules = undefined;
+
     const wall = [
       new Array(5),
       new Array(5),
@@ -41,11 +46,14 @@ describe('server/classes/wall/wall.class.js', () => {
       new Array(5)
     ];
 
+    utils.createRules.mockImplementation(rules);
+
     it(`should create EASY level Wall for undefined value`, () => {
       const wallObj = new Wall();
 
       expect(wallObj._level).toBe(levels.EASY);
       expect(wallObj._wall).toEqual(wall);
+      expect(wallObj._rules).toEqual(rules);
     });
 
     it(`should create EASY level Wall for STRING value`, () => {
@@ -53,6 +61,7 @@ describe('server/classes/wall/wall.class.js', () => {
 
       expect(wallObj._level).toBe(levels.EASY);
       expect(wallObj._wall).toEqual(wall);
+      expect(wallObj._rules).toEqual(rules);
     });
 
     for (let i = 0; i <= Object.keys(levels).length + 5; i++) {
@@ -60,11 +69,10 @@ describe('server/classes/wall/wall.class.js', () => {
 
       it(`should create ${level} level Wall for ${i} value`, () => {
         const wallObj = new Wall(i);
-
         expect(wallObj._level).toBe(levels[level]);
         expect(wallObj._wall).toEqual(wall);
+        expect(wallObj._rules).toEqual(rules);
       });
     }
-
   });
 });

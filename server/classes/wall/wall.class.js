@@ -1,7 +1,6 @@
 const levels = require('../../dictionaries/levels');
 const levelsInt = Object.values(levels);
-
-const colors = require('../../dictionaries/colors');
+const utils = require('./wall.utils');
 
 class Wall {
 
@@ -13,8 +12,10 @@ class Wall {
    * @param {number} level - level of the game
    */
   constructor(level) {
-    if (!level || levelsInt.indexOf(level) === -1) level = levels.EASY;
+    if (!level || levelsInt.indexOf(level) === -1) { level = levels.EASY };
+
     this._level = level;
+
     this._wall = [
       new Array(5),
       new Array(5),
@@ -22,6 +23,8 @@ class Wall {
       new Array(5),
       new Array(5)
     ];
+    
+    this._rules = utils.createRules(level);
   }
 
   /**

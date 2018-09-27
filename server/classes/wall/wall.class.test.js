@@ -1,33 +1,3 @@
-/*
-* canBePlaced
-* всегда должен быть цвет
-* всегда должна быть строка
-* легкий: колонка всегда undefined, иначе исключение
-* сложный: колонка всегда number, иначе исключение
-* сложный: если колонка занята, мессадж на клиент об ошибке
-* правильные варианты тру для легкого
-* несколько edge case для сложного
-*
-* place
-* всегда вызывает canBePlaced
-* всегда возвращает правильный подсчёт очков
-*
-* rules
-* легкий: col это number
-* сложный: col это массив чисел
-* сложный: place должен удалять значение по горизонтали и вертикали
-*
-*
-* у легкого уровня сложности готовые rules
-* у сложного уровня сложности рулс не готовые
-*
-* для легкой игры достаточно только строки для заполнения
-* неправильный тайл возвращает ошибку и генерирует исключение
-*
-* для сложной игры колонка должна быть указана всегда
-* неуказанная колонка генерирует исключение
-*
-* */
 const Wall = require('./wall.class');
 const levels = require('../../dictionaries/levels');
 const colors = require('../../dictionaries/colors');
@@ -77,139 +47,95 @@ describe('server/classes/wall/wall.class.js', () => {
     }
   });
 
-  describe('canBePlaced()', () => {
-    describe('EASY', () => {
-      const rulesMock = [
-        [0, 1, 2, 3, 4],
-        [1, 2, 3, 4, 0],
-        [2, 3, 4, 0, 1],
-        [3, 4, 0, 1, 2],
-        [4, 0, 1, 2, 3],
-      ];
+  describe(`canBePlaced`, () => {
+    let wallEasy;
+    let wallHard;
+    const color = 0;
+    const row = 0;
+    const col = 0;
 
-      beforeAll(()=> {
-        utils.createRules.mockImplementation(rulesMock);
-      });
+    beforeEach(() => {
+      wallEasy = new Wall(levels.EASY);
+      wallHard = new Wall(levels.HARD);
+    });
 
-      describe(`empty board`, () => {
-        beforeAll(() => {
-          const wall = new Wall(levels.EASY);
+    describe(`(colorIndex, rowIndex, null)`, () => {
+      describe(`ANY`, () => {
+        it(`should return true for empty board`, () => {
+          expect(wallEasy.canBePlaced(color, row)).toBe(true);
+          expect(wallHard.canBePlaced(color, row)).toBe(true);
         });
 
-        for(let color = 0; color < colors.length; color++) {
-          for(let row = 0; row < 5; row++) {
-            it(`should be 'true' for '${colors[color]}' tile in ${row} row`, () => {
-              expect(wall.canBePlaced(color, row)).toBe(true);
-            });
+        it(`should return false if tile on row exist`, () => {
+          wallEasy._wall[0][0] = colors[color];
+          wallHard._wall[0][0] = colors[color];
 
-            describe(`rule: ${colors[color]} tile on [${row}][${rulesMock[color][row]}]`, () => {
-              for(let col = 0; col < 5; col++) {
-                const bool = (rulesMock[color][row] === col);
-
-                it(`should be '${bool}' for '${colors[color]}' tile in [${row}][${col}]`,() => {
-                  expect(wall.canBePlaced(color, row, col)).toBe(bool);
-                });
-              }
-            });
-          }
-        }
+          expect(wallEasy.canBePlaced(color, row)).toBe(true);
+          expect(wallHard.canBePlaced(color, row)).toBe(true);
+        });
       });
 
-      describe(`not empty board`, () => {
-        const color = 0;
-        const row = 0;
-        const col = rulesMock[color][row];
+      describe(`HARD`, () => {
+        it(`should return false for not empty rows with crosses`, () => {
+          /*
+            [ [*] ,   * , red, black, white],
+            [ blue,   * , *  , *    , *    ],
+            [   * , blue, *  , *    , *    ]
+          */
 
-        beforeEach(() => {
-          wall = new Wall(levels.EASY);
+          wallHard._wall[1][0] = colors[0];
+          wallHard._wall[2][1] = colors[0];
+          wallHard._wall[0][2] = colors[2];
+          wallHard._wall[0][3] = colors[3];
+          wallHard._wall[0][4] = colors[4];
 
-          wall._wall[row][col] = colors[color];
-        });
-
-        describe(`wall[${row}][${col}] = ${colors[color]}`, () => {
-          it(`should be false for ${colors[color]} tile on ${row} row`, () => {
-            expect(wall.canBePlaced(color, row)).toBe(false);
-          });
-          it(`should be false for ${colors[color]} tile on [${row +1}][${col}]`, () => {
-            expect(wall.canBePlaced(color, row + 1, col)).toBe(false);
-          });
-          it(`should be true for ${colors[color]} tile on [${row +1}][${col+1}]`, () => {
-            expect(wall.canBePlaced(color, row + 1, col +1)).toBe(false);
-          });
+          expect(wallHard.canBePlaced(color, row)).toBe(false);
         });
       });
     });
 
-    describe('HARD', () => {
-      const rulesMock = undefined;
-
-      beforeAll(() => {
-        utils.createRules.mockImplementation(rulesMock);
-      });
-
-      describe(`empty board`, ()=> {
-        beforeAll(() => {
-          wall = new Wall(levels.HARD);
+    describe(`(colorIndex, rowIndex, colorIndex)`, () => {
+      describe(`ANY`, () => {
+        it(`should return true for empty board`, () => {
+          expect(wallEasy.canBePlaced(color, row, col)).toBe(true);
+          expect(wallHard.canBePlaced(color, row, col)).toBe(true);
         });
 
-        for(let color = 0; color < colors.length; color++) {
-          for(let row = 0; row < 5; row++) {
-            it(`should return 'true' for '${colors[color]}' tile in ${row} row`, () => {
-              expect(wall.canBePlaced(color, row)).toBe(true);
-            });
+        it(`should return false if tile exist in a row or col`, () => {
+          wallEasy._wall[0][0] = colors[color];
+          wallHard._wall[0][0] = colors[color];
 
-            for(let col = 0; col < 5; col++) {
-              it(`should return 'true' for '${colors[color]}' tile in [${row}][${col}]`, () => {
-                expect(wall.canBePlaced(color, row, col)).toBe(true);
-              });
-            }
-          }
-        }
+          expect(wallEasy.canBePlaced(color,row,col)).toBe(false);
+          expect(wallHard.canBePlaced(color,row,col)).toBe(false);
+
+          expect(wallEasy.canBePlaced(color, row + 1, col)).toBe(false);
+          expect(wallHard.canBePlaced(color, row + 1, col)).toBe(false);
+
+          expect(wallEasy.canBePlaced(color, row, col + 1)).toBe(false);
+          expect(wallHard.canBePlaced(color, row, col + 1)).toBe(false);
+        })
       });
 
-      describe(`not empty board`,() => {
-        describe(`easy`, () => {
-          const color = 0;
-          const row = 0;
-          const col = 0;
-
-          beforeEach(() => {
-            wall = new Wall(levels.EASY);
-
-            wall._wall[row][col] = colors[color];
-          });
-
-          describe(`wall[${row}][${col}] = ${colors[color]}`, () => {
-            it(`should be false for ${colors[color]} tile on ${row} row`, () => {
-              expect(wall.canBePlaced(color, row)).toBe(false);
-            });
-            it(`should be false for ${colors[color]} tile on [${row +1}][${col}]`, () => {
-              expect(wall.canBePlaced(color, row + 1, col)).toBe(false);
-            });
-            it(`should be true for ${colors[color]} tile on [${row +1}][${col+1}]`, () => {
-              expect(wall.canBePlaced(color, row + 1, col +1)).toBe(false);
-            });
-          })
+      describe(`EASY`, () => {
+        it(`should return false for incorrect square`, () => {
+          expect(wallEasy.canBePlaced(color, row + 1, col)).toBe(false);
+          expect(wallEasy.canBePlaced(color, row, col + 1)).toBe(false);
         });
-        describe(`not easy`, () => {
-          beforeEach(() => {
-            wall = new Wall(levels.EASY);
+      });
 
-            wall._wall[0][0] = colors[0];
-            wall._wall[0][1] = colors[1];
-            wall._wall[0][2] = colors[2];
-            wall._wall[1][3] = colors[3];
-            wall._wall[1][4] = colors[3];
-          });
+      describe(`HARD`, () => {
+        it(`should return false for incorrect row tile`, () => {
+          wallHard._wall[0][1] = colors[color];
 
-          for(let i = 0; i < 5; i++) {
-            it(`should return false for ${colors[3]} tile for ${i} column`, () => {
-              expect(wall.canBePlaced(3,0,i)).toBe(false);
-            });
-          }
+          expect(wallHard.canBePlaced(color, row + 1, col)).toBe(false);
+        });
+
+        it(`should return false for incorrect col tile`, () => {
+          wallHard._wall[1][0] = colors[color];
+
+          expect(wallHard.canBePlaced(color, row + 1, col)).toBe(false);
         });
       })
     });
   });
-
 });

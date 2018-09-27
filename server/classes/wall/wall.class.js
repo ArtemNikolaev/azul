@@ -38,7 +38,7 @@ class Wall {
    *
    * @returns {boolean} - able or unable
    */
-  canBePlaced(color, row, column) {
+  canBePlaced(colorIndex, rowIndex, columnIndex) {
 
   }
 

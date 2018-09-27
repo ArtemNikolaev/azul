@@ -17,7 +17,7 @@ describe('server/classes/wall/wall.class.js', () => {
       new Array(5)
     ];
 
-    utils.createRules.mockImplementation(rules);
+    utils.createRules.mockImplementationOnce(rules);
 
     it(`should create EASY level Wall for undefined value`, () => {
       const wallObj = new Wall();
@@ -48,6 +48,16 @@ describe('server/classes/wall/wall.class.js', () => {
   });
 
   describe(`canBePlaced`, () => {
+    const rules = [
+      [0, 1, 2, 3, 4],
+      [1, 2, 3, 4, 0],
+      [2, 3, 4, 0, 1],
+      [3, 4, 0, 1, 2],
+      [4, 0, 1, 2, 3]
+    ];
+
+    utils.createRules.mockImplementation(rules);
+
     let wallEasy;
     let wallHard;
     const color = 0;

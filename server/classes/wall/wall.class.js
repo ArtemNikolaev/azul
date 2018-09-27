@@ -39,7 +39,39 @@ class Wall {
    * @returns {boolean} - able or unable
    */
   canBePlaced(colorIndex, rowIndex, columnIndex) {
+    if (this._level === levels.EASY) {
+      const ruleCol = this._rules[columnIndex][rowIndex];
 
+      if (isNaN(columnIndex)) columnIndex = ruleCol;
+      if (columnIndex !== ruleCol) return false;
+
+      if (this._wall[rowIndex][columnIndex]) return false;
+      else return true;
+    }
+
+    if (this._wall[rowIndex].indexOf(colors[colorIndex]) !== -1) return false;
+
+    if (columnIndex) {
+      let result = true;
+
+      this._wall.forEach(row => {
+        if (row[columnIndex] === colors[colorIndex]) result = false;
+      })
+
+      return result;
+    }
+
+    for(let col= 0; col < 5; col++) {
+      if (this._wall[rowIndex][col]) continue;
+
+      let result = true;
+
+      this._wall.forEach(row => {
+        if (row[columnIndex] === colors[colorIndex]) result = false;
+      });
+
+      if (result) return true;
+    }
   }
 
   /**

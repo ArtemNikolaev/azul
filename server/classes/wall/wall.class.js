@@ -1,4 +1,5 @@
 const levels = require('../../dictionaries/levels');
+const colors = require('../../dictionaries/colors');
 const levelsInt = Object.values(levels);
 const utils = require('./wall.utils');
 

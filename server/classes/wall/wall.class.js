@@ -40,7 +40,7 @@ class Wall {
    */
   canBePlaced(colorIndex, rowIndex, columnIndex) {
     if (this._level === levels.EASY) {
-      const ruleCol = this._rules[columnIndex][rowIndex];
+      const ruleCol = this._rules[colorIndex][rowIndex];
 
       if (isNaN(columnIndex)) columnIndex = ruleCol;
       if (columnIndex !== ruleCol) return false;
@@ -62,16 +62,19 @@ class Wall {
     }
 
     for(let col= 0; col < 5; col++) {
+      //we already check row, so there is no colorIndex in the row
       if (this._wall[rowIndex][col]) continue;
 
       let result = true;
 
       this._wall.forEach(row => {
-        if (row[columnIndex] === colors[colorIndex]) result = false;
+        if (row[col] === colors[colorIndex]) result = false;
       });
 
-      if (result) return true;
+      if (!result) return result;
     }
+
+    return true;
   }
 
   /**

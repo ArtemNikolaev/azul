@@ -13,8 +13,8 @@ describe('server/classes/wall/wall.utils.js', () => {
     ];
 
     for (let i = 0; i <= Object.keys(levels).length + 5; i++) {
-      const level = (levels.EASY === i) ? 'EASY' : 'HARD';
-      const rulesValue = (level === 'EASY') ? rulesMock : undefined;
+      const level = (levels.HARD === i) ? 'EASY' : 'HARD';
+      const rulesValue = (level === 'EASY') ? rulesMock : false;
 
       it(`should return correct rules for ${level} level with ${i} value`, () => {
         expect(utils.createRules(levels[level])).toEqual(rulesValue);

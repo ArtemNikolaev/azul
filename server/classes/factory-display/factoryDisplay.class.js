@@ -16,6 +16,23 @@ class FactoryDisplay {
 
     this._store.splice(0, 4, ...range);
   }
+
+  get(color) {
+    const result = {
+      player: [],
+      center: []
+    }
+
+    if (this._store.indexOf(color) === -1) throw 'color should exist in factory display';
+
+    while(this._store.length) {
+      const storeCol = this._store.shift();
+      if (storeCol === color) result.player.push(storeCol);
+      else result.center.push(storeCol);
+    }
+
+    return result;
+  }
 }
 
 module.exports = FactoryDisplay;
